@@ -14,7 +14,7 @@ From `docs/SPEC-billing.md`:
 - "`LEGACY` customer type: always discount `0.0` (short-circuits all other discount logic)."
 - "Volume discount: if `subtotal > 5000.0`, adds **2%** of subtotal."
 
-Spec ambiguity/questions to resolve before implementation:
+Spec ambiguity/questions to resolve before implementation (from issue #8 request text):
 
 - The current spec keys loyalty discount off `customerType == "LOYALTY"`, while the request keys it off tenure (`yearsWithUs > 2`). Should 10% apply to **all** non-LEGACY customers with `yearsWithUs > 2`, or only customers whose `customerType` is `LOYALTY` **and** tenure is >2?
 - If tenure-based 10% applies, does it **replace** the existing 7% loyalty component or exist as an additional stacking component? (Request says "existing discounts" should continue to work.)
@@ -38,14 +38,15 @@ Implementation gate for these ambiguities:
 The following characterization tests in `/home/runner/work/demo-octopus/demo-octopus/src/test/java/com/meridian/invoiceworks/BillingCharacterizationTest.java` must remain green and unedited:
 
 - `legacyCustomerBypassesAllDiscounts_evenOverVolumeThreshold` (LEGACY discount bypass)
-- `loyaltyTypeDiscountIsSevenPercent_notTheDocumentedFive` (current 7% loyalty behavior; updated only in follow-up implementation PR after ambiguity resolution)
 - `taxIsComputedBeforeDiscount_onTheFullSubtotal` (tax-before-discount order)
 - `quebecTaxRateComesFromLegacyTaxTable` (QC/legacy tax path)
 - `februaryDueDateIsOneDayEarly` (due-date quirk)
 - `printedTotalDivergesByOnePennyFromInvoiceTotal` (one-cent print divergence)
 - `discountUtilIsDeadCodeAndDisagreesWithLivePath` (DiscountUtil remains off billing path)
 
-Note: the loyalty characterization test above changes only in the follow-up implementation PR (not this plan PR), after this plan is approved and ambiguity resolution is recorded; it should be updated/replaced with tests that pin the approved post-resolution loyalty behavior (not loosened).
+Explicit planned behavior-change test update in the follow-up implementation PR (not this plan PR):
+
+- `loyaltyTypeDiscountIsSevenPercent_notTheDocumentedFive` will be modified in place only after this plan is approved and issue #8 ambiguity resolution is recorded, so it pins the approved post-resolution loyalty behavior.
 
 5. **Tests to add**
 
