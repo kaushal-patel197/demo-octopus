@@ -13,7 +13,6 @@ From `docs/SPEC-billing.md`:
 - "**Total** = `subtotal + tax - discount`."
 - "`LEGACY` customer type: always discount `0.0` (short-circuits all other discount logic)."
 - "Volume discount: if `subtotal > 5000.0`, adds **2%** of subtotal."
-- "These rules stack for non-LEGACY loyalty customers over the threshold (7% + 2%)." (SPEC section: **Live discount rules (billing path)**)
 
 Spec ambiguity/questions to resolve before implementation:
 
@@ -39,13 +38,14 @@ Implementation gate for these ambiguities:
 The following characterization tests in `/home/runner/work/demo-octopus/demo-octopus/src/test/java/com/meridian/invoiceworks/BillingCharacterizationTest.java` must remain green and unedited:
 
 - `legacyCustomerBypassesAllDiscounts_evenOverVolumeThreshold` (LEGACY discount bypass)
+- `loyaltyTypeDiscountIsSevenPercent_notTheDocumentedFive` (current 7% loyalty behavior; updated only in follow-up implementation PR after ambiguity resolution)
 - `taxIsComputedBeforeDiscount_onTheFullSubtotal` (tax-before-discount order)
 - `quebecTaxRateComesFromLegacyTaxTable` (QC/legacy tax path)
 - `februaryDueDateIsOneDayEarly` (due-date quirk)
 - `printedTotalDivergesByOnePennyFromInvoiceTotal` (one-cent print divergence)
 - `discountUtilIsDeadCodeAndDisagreesWithLivePath` (DiscountUtil remains off billing path)
 
-Note: `loyaltyTypeDiscountIsSevenPercent_notTheDocumentedFive` is expected to change only in the follow-up implementation PR (not this plan PR) after this plan is approved and ambiguity resolution is recorded; in that implementation PR, it should be updated/replaced with tests that pin the approved post-resolution loyalty behavior (not loosened).
+Note: the loyalty characterization test above changes only in the follow-up implementation PR (not this plan PR), after this plan is approved and ambiguity resolution is recorded; it should be updated/replaced with tests that pin the approved post-resolution loyalty behavior (not loosened).
 
 5. **Tests to add**
 
