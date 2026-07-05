@@ -13,7 +13,7 @@ From `docs/SPEC-billing.md`:
 - "**Total** = `subtotal + tax - discount`."
 - "`LEGACY` customer type: always discount `0.0` (short-circuits all other discount logic)."
 - "Volume discount: if `subtotal > 5000.0`, adds **2%** of subtotal."
-- "These rules stack for non-LEGACY loyalty customers over the threshold (7% + 2%)."
+- "These rules stack for non-LEGACY loyalty customers over the threshold (7% + 2%)." (SPEC section: **Live discount rules (billing path)**)
 
 Spec ambiguity/questions to resolve before implementation:
 
@@ -45,7 +45,7 @@ The following characterization tests in `/home/runner/work/demo-octopus/demo-oct
 - `printedTotalDivergesByOnePennyFromInvoiceTotal` (one-cent print divergence)
 - `discountUtilIsDeadCodeAndDisagreesWithLivePath` (DiscountUtil remains off billing path)
 
-Note: `loyaltyTypeDiscountIsSevenPercent_notTheDocumentedFive` is expected to change only in the follow-up implementation PR (not this plan PR) after this plan is approved and ambiguity resolution is recorded; in that implementation PR, it should be updated/replaced with tests that pin the approved 10% behavior rather than loosened.
+Note: `loyaltyTypeDiscountIsSevenPercent_notTheDocumentedFive` is expected to change only in the follow-up implementation PR (not this plan PR) after this plan is approved and ambiguity resolution is recorded; in that implementation PR, it should be updated/replaced with tests that pin the approved post-resolution loyalty behavior (not loosened).
 
 5. **Tests to add**
 
