@@ -18,7 +18,8 @@ jobs:
           java-version: '8'
           cache: maven
 
-      # Phase A: compile only. Characterization tests are wired in in Phase E,
-      # at which point this becomes `mvn -q test`.
-      - name: Build
-        run: mvn -q package
+      # Runs the characterization suite on every PR. These tests pin current
+      # billing behavior (including known landmines); a red build means a change
+      # altered behavior the tests lock in — see docs/SPEC-billing.md.
+      - name: Test
+        run: mvn -q test

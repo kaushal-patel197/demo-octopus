@@ -78,3 +78,36 @@ before and after any change.
 invoice totals are actually computed — treat it as the source of truth for
 billing behavior and cite it when you rely on it. (If that file isn't present
 yet, it hasn't been recovered; fall back to reading the code.)
+
+## Process — how work must flow
+
+Knowing the code (everything above) is necessary but not sufficient. Changes to
+billing behavior also have to flow through these gates. This is not optional.
+
+1. **Plan before code.** Any change that could alter billing behavior starts
+   with a plan: open a "Plan request" issue, produce `docs/plans/PLAN-<n>.md`
+   (goal, spec sections relied on, exact files to touch, behavior that must not
+   change, tests to add, out-of-scope, risks), and get that plan PR reviewed and
+   merged **before** writing implementation code. A plan PR contains the plan
+   only — no code.
+2. **Implement the merged plan exactly.** Change only the files the plan lists;
+   add only the tests it names. **If reality contradicts the plan, stop and
+   comment on the issue — do not improvise or expand scope.**
+3. **Characterization tests define current truth.** The tests in `src/test/...`
+   pin how the code behaves today, deliberately including known quirks (the 7%
+   loyalty rate, the LEGACY bypass, tax-before-discount, the February due date,
+   the one-cent print divergence). They must stay green. **Never edit or delete
+   a characterization test to make a change pass.** The only time a
+   characterization test changes is when a merged plan explicitly says a
+   behavior is changing and why — and even then you update the test to pin the
+   new behavior, you don't loosen it away.
+4. **Don't rewrite the spec to match your code.** `docs/SPEC-billing.md` reflects
+   actual behavior. If a merged plan changes behavior, update the spec as part
+   of that planned work and say so — never quietly edit the spec so it agrees
+   with an unplanned change.
+5. **CI + PR review are the merge gate.** `mvn -q test` runs on every PR; a red
+   characterization test blocks the change. A human reviews the diff against the
+   plan before merge.
+
+One line: the notes above raise the quality of any single change; these gates
+bound the risk of a chain of changes. Do both.
