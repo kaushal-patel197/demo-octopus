@@ -2,7 +2,7 @@
 
 1. **Goal**
 
-When an invoice is finalized, customers who have been with us for more than 2 years should receive a 10% loyalty discount in the billed totals (`Invoice.discount` and `Invoice.total`) while preserving the current billing flow: tax is still computed on full pre-discount subtotal, LEGACY customers still bypass discounts, and existing volume discount behavior remains intact unless explicitly changed by clarified requirements.
+When an invoice is finalized, the system should apply the requested 10% long-standing-customer loyalty behavior in billed totals (`Invoice.discount` and `Invoice.total`) according to the final eligibility/stacking clarifications recorded on issue #8, while preserving the current billing flow: tax is still computed on full pre-discount subtotal, LEGACY customers still bypass discounts, and existing volume discount behavior remains intact unless explicitly changed by that clarification.
 
 2. **Spec sections relied on**
 
@@ -16,7 +16,7 @@ From `docs/SPEC-billing.md`:
 
 Spec ambiguity/questions to resolve before implementation (from issue #8 request text):
 
-- The current spec keys loyalty discount off `customerType == "LOYALTY"`, while the request keys it off tenure (`yearsWithUs > 2`). Should 10% apply to **all** non-LEGACY customers with `yearsWithUs > 2`, or only customers whose `customerType` is `LOYALTY` **and** tenure is >2?
+- The current spec/live behavior applies loyalty via `customerType == "LOYALTY"` (characterization test currently pins this at 7%), while issue #8 requests tenure-based eligibility (`yearsWithUs > 2`). Should 10% apply to **all** non-LEGACY customers with `yearsWithUs > 2`, or only customers whose `customerType` is `LOYALTY` **and** tenure is >2?
 - If tenure-based 10% applies, does it **replace** the existing 7% loyalty component or exist as an additional stacking component? (Request says "existing discounts" should continue to work.)
 
 Implementation gate for these ambiguities:
@@ -56,8 +56,8 @@ In `src/test/java/com/meridian/invoiceworks/LoyaltyTenureDiscountTest.java`:
   - Asserts a >2-year eligible customer receives 10% discount in finalized invoice.
 - `exactlyTwoYearsDoesNotGetLongStandingLoyaltyDiscount()`
   - Asserts boundary condition: 2 years is not eligible for the >2-years rule.
-- `longStandingDiscountStacksWithVolumeDiscountForEligibleCustomer()`
-  - Asserts stacking with existing 2% volume discount (for non-LEGACY eligible customer over threshold), unless clarified otherwise.
+- `longStandingDiscountInteractionWithVolumeDiscountMatchesResolvedRule()`
+  - Asserts the interaction between long-standing loyalty behavior and existing 2% volume discount exactly matches the resolved issue #8 rule (stacking or non-stacking).
 - `legacyCustomerStillBypassesDiscountsEvenIfLongStanding()`
   - Asserts LEGACY short-circuit remains 0 discount even when tenure >2.
 - `taxComputationOrderUnchangedWithLongStandingDiscount()`
