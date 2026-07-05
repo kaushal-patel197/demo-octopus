@@ -101,6 +101,11 @@ public class InvoiceManager {
 
         double discount = 0.0;
 
+        // Long-standing loyalty discount: 10% for customers with us more than 2 years.
+        if (customer.yearsWithUs > 2) {
+            discount += subtotal * 0.10;
+        }
+
         // Loyalty discount: apply 5% for loyalty-tier customers.
         if ("LOYALTY".equals(customer.customerType)) {
             discount += subtotal * 0.07;

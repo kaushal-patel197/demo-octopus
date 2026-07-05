@@ -20,9 +20,10 @@
 `computeDiscount()` in `InvoiceManager` is the live discount logic:
 
 - `LEGACY` customer type: always discount `0.0` (short-circuits all other discount logic). (`src/main/java/com/meridian/invoiceworks/InvoiceManager.java:95-100`)
-- `LOYALTY` customer type: adds **7%** of subtotal. (`src/main/java/com/meridian/invoiceworks/InvoiceManager.java:104-107`)
+- Long-standing customer discount: if `customer.yearsWithUs > 2`, adds **10%** of subtotal (applies to all non-LEGACY customers). (`src/main/java/com/meridian/invoiceworks/InvoiceManager.java:105-107`)
+- `LOYALTY` customer type: adds **7%** of subtotal. (`src/main/java/com/meridian/invoiceworks/InvoiceManager.java:110-112`)
 - Volume discount: if `subtotal > 5000.0`, adds **2%** of subtotal. (`src/main/java/com/meridian/invoiceworks/InvoiceManager.java:109-113`)
-- These rules stack for non-LEGACY loyalty customers over the threshold (7% + 2%). (`src/main/java/com/meridian/invoiceworks/InvoiceManager.java:102-113`)
+- These rules stack for non-LEGACY customers: a long-standing (>2 years) LOYALTY customer over the volume threshold gets 10% + 7% + 2%. (`src/main/java/com/meridian/invoiceworks/InvoiceManager.java:102-117`)
 
 ## Discount rules that are dead code (or dead for billing)
 
