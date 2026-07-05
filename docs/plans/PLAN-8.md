@@ -20,6 +20,11 @@ Spec ambiguity/questions to resolve before implementation:
 - The current spec keys loyalty discount off `customerType == "LOYALTY"`, while the request keys it off tenure (`yearsWithUs > 2`). Should 10% apply to **all** non-LEGACY customers with `yearsWithUs > 2`, or only customers whose `customerType` is `LOYALTY` **and** tenure is >2?
 - If tenure-based 10% applies, does it **replace** the existing 7% loyalty component or exist as an additional stacking component? (Request says "existing discounts" should continue to work.)
 
+Implementation gate for these ambiguities:
+
+- Before implementation starts, obtain explicit written resolution from the issue requester/product owner on both questions above in issue #8 (or linked plan review comments), then implement exactly that resolution.
+- Until that resolution is recorded, no billing-code implementation should proceed from this plan.
+
 3. **Exact files to touch**
 
 - `/home/runner/work/demo-octopus/demo-octopus/src/main/java/com/meridian/invoiceworks/InvoiceManager.java`
@@ -40,7 +45,7 @@ The following characterization tests in `/home/runner/work/demo-octopus/demo-oct
 - `printedTotalDivergesByOnePennyFromInvoiceTotal` (one-cent print divergence)
 - `discountUtilIsDeadCodeAndDisagreesWithLivePath` (DiscountUtil remains off billing path)
 
-Note: `loyaltyTypeDiscountIsSevenPercent_notTheDocumentedFive` is expected to change in a behavior-change PR only after this plan is approved; it should be replaced by new behavior-pinning tests rather than loosened.
+Note: `loyaltyTypeDiscountIsSevenPercent_notTheDocumentedFive` is expected to change only in the follow-up implementation PR (not this plan PR) after this plan is approved and ambiguity resolution is recorded; in that implementation PR, it should be updated/replaced with tests that pin the approved 10% behavior rather than loosened.
 
 5. **Tests to add**
 
