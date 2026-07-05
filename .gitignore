@@ -1,0 +1,14 @@
+# The demo answer key and talk crib notes must NEVER reach the public repo.
+demo-notes/
+
+# Maven build output
+target/
+
+# Flat-file "database" written by Main
+*.dat
+
+# Editor / OS noise
+*.class
+.idea/
+*.iml
+.DS_Store
