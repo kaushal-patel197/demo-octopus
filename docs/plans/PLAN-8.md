@@ -26,16 +26,16 @@ Implementation gate for these ambiguities:
 
 3. **Exact files to touch**
 
-- `/home/runner/work/demo-octopus/demo-octopus/src/main/java/com/meridian/invoiceworks/InvoiceManager.java`
+- `src/main/java/com/meridian/invoiceworks/InvoiceManager.java`
   - Update `computeDiscount(...)` to implement the approved 10% long-standing-customer loyalty rule, while preserving LEGACY bypass, volume threshold logic, and existing tax/total order of operations.
-- `/home/runner/work/demo-octopus/demo-octopus/src/test/java/com/meridian/invoiceworks/LoyaltyTenureDiscountTest.java` (new)
+- `src/test/java/com/meridian/invoiceworks/LoyaltyTenureDiscountTest.java` (new)
   - Add focused tests for the new loyalty rule and interactions with existing discount/tax behavior.
-- `/home/runner/work/demo-octopus/demo-octopus/docs/SPEC-billing.md`
+- `docs/SPEC-billing.md`
   - Update "Live discount rules" / related sections so the spec reflects the merged behavior change.
 
 4. **Behavior that must NOT change**
 
-The following characterization tests in `/home/runner/work/demo-octopus/demo-octopus/src/test/java/com/meridian/invoiceworks/BillingCharacterizationTest.java` must remain green and unedited:
+The following characterization tests in `src/test/java/com/meridian/invoiceworks/BillingCharacterizationTest.java` must remain green and unedited:
 
 - `legacyCustomerBypassesAllDiscounts_evenOverVolumeThreshold` (LEGACY discount bypass)
 - `taxIsComputedBeforeDiscount_onTheFullSubtotal` (tax-before-discount order)
@@ -50,7 +50,7 @@ Explicit planned behavior-change test update in the follow-up implementation PR 
 
 5. **Tests to add**
 
-In `/home/runner/work/demo-octopus/demo-octopus/src/test/java/com/meridian/invoiceworks/LoyaltyTenureDiscountTest.java`:
+In `src/test/java/com/meridian/invoiceworks/LoyaltyTenureDiscountTest.java`:
 
 - `longStandingCustomerGetsTenPercentLoyaltyDiscount()`
   - Asserts a >2-year eligible customer receives 10% discount in finalized invoice.
